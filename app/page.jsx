@@ -4,6 +4,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import Image from "next/image";
 import { FEATURES, STEPS, TESTIMONIALS } from "@/lib/landing";
 
@@ -132,28 +139,58 @@ export default function LandingPage() {
             What our users are saying
           </h2>
 
-          <div className="mx-auto mt-12 grid max-w-5xl gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {TESTIMONIALS.map(({ quote, name, role, image }) => (
-              <Card key={name} className="flex flex-col justify-between">
-                <CardContent className="space-y-4 p-6">
-                  <p className="text-gray-500">{quote}</p>
-                  <div className="flex items-center space-x-3">
-                    <Avatar>
-                      {/* Placeholder avatar */}
-                      <AvatarImage src={image} alt={name} />
-                      <AvatarFallback className="uppercase">
-                        {name.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="text-left">
-                      <p className="text-sm font-medium">{name}</p>
-                      <p className="text-sm text-muted-foreground">{role}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          {/* --- REPLACEMENT START --- */}
+          {/* We replace the grid div with the Carousel component */}
+          <div className="mt-12 flex justify-center">
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full max-w-5xl"
+            >
+              <CarouselContent>
+                {TESTIMONIALS.map(({ quote, name, role, image }) => (
+                  // Each item is wrapped in a CarouselItem
+                  // The `basis` classes define how many items are visible per slide
+                  <CarouselItem
+                    key={name}
+                    className="md:basis-1/2 lg:basis-1/3 p-4"
+                  >
+                    {/*
+                    Added h-full to the Card to ensure all cards in the
+                    same view have the same height for a uniform look.
+                  */}
+                    <Card className="flex flex-col h-full">
+                      <CardContent className="flex flex-col flex-grow justify-between p-6">
+                        <p className="text-gray-500 text-justify text-sm">
+                          "{quote}"
+                        </p>
+                        <div className="flex items-center space-x-3 pt-4 mt-auto">
+                          <Avatar>
+                            <AvatarImage src={image} alt={name} />
+                            <AvatarFallback className="uppercase">
+                              {name.charAt(0)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="text-left">
+                            <p className="text-sm font-medium">{name}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {role}
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              {/* These are the left/right navigation buttons */}
+              <CarouselPrevious className="hidden md:flex" />
+              <CarouselNext className="hidden md:flex" />
+            </Carousel>
           </div>
+          {/* --- REPLACEMENT END --- */}
         </div>
       </section>
 
